@@ -107,7 +107,7 @@ export default {
       this.dialogFormVisible = true
     },
     change(page) {
-      this.page = page
+      this.current_page = page
       this.getArticleList()
     },
     getUserList() {

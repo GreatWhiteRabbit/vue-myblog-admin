@@ -168,7 +168,7 @@ export default {
 
     // 换页
     change(page){
-      this.page=page
+      this.current_page=page
       this.getList()
     },
     getList(){

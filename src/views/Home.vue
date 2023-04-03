@@ -116,6 +116,12 @@ export default {
               name: "用户列表",
               url: "/home/user/list",
             },
+            {
+              id: "2-2",
+              icon: "el-icon-edit-outline",
+              name: "验证码发送",
+              url: "/home/user/code",
+            },
           ],
         },
         {
@@ -179,6 +185,12 @@ export default {
               name: "被删除留言列表",
               url: "/home/message/delete",
             },
+            {
+              id: "5-5",
+              icon: "el-icon-edit-outline",
+              name: "网站建议",
+              url: "/home/message/suggestion",
+            },
           ],
         },
         {
@@ -190,13 +202,19 @@ export default {
               id: "6-1",
               icon: "el-icon-edit-outline",
               name: "网站公告",
-              url: "/home/sysmess/list",
+              url: "/home/web/list",
             },
             {
               id: "6-2",
               icon: "el-icon-edit-outline",
               name: "主页轮播",
-              url: "/home/show/list",
+              url: "/home/web/home",
+            },
+            {
+              id: "6-3",
+              icon: "el-icon-edit-outline",
+              name: "更新日志",
+              url: "/home/web/updateLog",
             },
 
           ],

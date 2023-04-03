@@ -250,7 +250,7 @@ export default {
 
     },
     change(page) {
-      this.page = page
+      this.current_page = page
       this.getArticleList()
     },
     getLinkList() {

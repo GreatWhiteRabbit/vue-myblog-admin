@@ -39,6 +39,12 @@ const EssayList = () =>
     import('../components/Essay/EssayList')
 const ProjectList = () =>
     import('../components/Essay/ProjectList')
+const GetSuggestion = () =>
+    import('../components/Message/GetSuggestion')
+const UpdateLogList =() =>
+    import('../components/Web/UpdateLogList')
+const CodeSendList = () =>
+    import('../components/User/CodeSendList')
 Vue.use(VueRouter)
 const name = "后台系统"
 const nav = {
@@ -101,6 +107,14 @@ const routes = [{
                 }
             },
             {
+                path: 'user/code',
+                component: CodeSendList,
+                meta:{
+                    title: '验证码发送-' + name,
+                    nav: nav
+                }
+            },
+            {
                 path: 'link/list',
                 component: LinkList,
                 meta:{
@@ -133,6 +147,14 @@ const routes = [{
                 }
             },
             {
+                path: 'message/suggestion',
+                component: GetSuggestion,
+                meta:{
+                    title: '建议列表-' + name,
+                    nav: nav
+                }
+            },
+            {
                 path: 'message/delete',
                 component: DeleteMessage,
                 meta:{
@@ -148,8 +170,9 @@ const routes = [{
                     nav: nav
                 }
             },
+
             {
-                path: 'show/list',
+                path: 'web/home',
                 component: HomeList,
                 meta:{
                     title: '首页轮播列表-' + name,
@@ -157,10 +180,18 @@ const routes = [{
                 }
             },
             {
-                path: 'sysmess/list',
+                path: 'web/list',
                 component: SysMessList,
                 meta:{
                     title: '系统公告列表-' + name,
+                    nav: nav
+                }
+            },
+            {
+                path: 'web/updateLog',
+                component: UpdateLogList,
+                meta:{
+                    title: '更新日志-' + name,
                     nav: nav
                 }
             },

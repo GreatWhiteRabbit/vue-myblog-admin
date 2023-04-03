@@ -8,30 +8,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="标题">
+      <el-table-column label="更新说明">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.title }}</span>
+          <span style="margin-left: 10px">{{ scope.row.update_info }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="内容">
+      <el-table-column label="更新时间">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.content }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-          label="是否首页显示"
-      >
-        <template slot-scope="scope">
-          <el-switch
-              v-model="scope.row.sys_show"
-              :active-value=true
-              :inactive-value=false
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="setDelete(scope.$index)">
-          </el-switch>
+          <span style="margin-left: 10px">{{ dateChange(scope.row.update_time) }}</span>
         </template>
       </el-table-column>
 
@@ -70,16 +55,13 @@
 
     <el-dialog :title="title" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="公告标题" :label-width="formLabelWidth">
-          <el-input v-model="form.title" autocomplete="off" placeholder="请输入公告标题"></el-input>
-        </el-form-item>
-        <el-form-item label="公告内容" :label-width="formLabelWidth">
+        <el-form-item label="更新内容说明" :label-width="formLabelWidth">
           <el-input
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4}"
-              v-model="form.content"
+              v-model="form.update_info"
               autocomplete="off"
-              placeholder="请输入公告内容"
+              placeholder="请输入更新内容说明"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -95,7 +77,10 @@
 import axios from "axios";
 
 export default {
-  name: "SysMessList",
+  /*
+  * 更新日志
+  * */
+  name: "UpdateLogList",
   data() {
     return {
       list: [],
@@ -107,9 +92,9 @@ export default {
       title: "",
       dialogFormVisible: false,
       form: {
-        title: "",
-        content: "",
-        id: ''
+        update_info: "",
+        id: '',
+        update_time:''
       },
       formLabelWidth: "120px",
     };
@@ -117,15 +102,15 @@ export default {
   methods: {
     handleEdit(index) {
       this.form.id = this.list[index].id;
-      this.form.title = this.list[index].title;
-      this.form.content = this.list[index].content;
+      this.form.update_info = this.list[index].update_info;
+      this.form.update_time = this.list[index].update_time;
       this.update = true;
-      this.title = "修改公告";
+      this.title = "修改更新内容";
       this.dialogFormVisible = true;
     },
     addRoute() {
       this.$data.form = this.$options.data().form;
-      this.title = "添加公告";
+      this.title = "添加更新内容";
       this.update = false;
       this.dialogFormVisible = true;
     },
@@ -133,69 +118,74 @@ export default {
     updateInfo() {
       axios({
         method: 'put',
-        url: '/apis/system/update',
+        url: '/apis/updateLog',
         data: {
           id: this.form.id,
-          title: this.form.title,
-          content: this.form.content
+          update_info: this.form.update_info,
+          update_time: this.form.update_time
         }
       }).then(res => {
         this.dialogFormVisible = false;
         if (res.data.data === true) {
-          this.$message.success("修改成功");
-          this.getList();
+          this.$notify({
+            type:'success',
+            title:'修改操作',
+            message:'修改成功'
+          })
+          this.getUpdateLogList();
         } else {
-          this.$message.error("修改失败");
+          this.$notify({
+            type:'error',
+            title:'修改操作',
+            message:'修改失败'
+          });
         }
       })
     },
     addInfo() {
       axios({
         method: 'post',
-        url: '/apis/system',
+        url: '/apis/updateLog',
         data: {
-          title: this.form.title,
-          content: this.form.content
+         update_info:this.form.update_info
         }
       }).then(res => {
         this.dialogFormVisible = false;
         this.update = true;
         if (res.data.data === true) {
-          this.$message.success("添加成功");
-          this.getList();
+          this.$notify({
+            type:'success',
+            title:'添加操作',
+            message:"添加成功"
+          });
+          this.getUpdateLogList();
         } else {
-          this.$message.error("添加失败");
+          this.$notify({
+            type:'error',
+            title:"添加操作",
+            message:'添加失败'
+          })
         }
       })
     },
-    setDelete(index) {
-      let id = this.list[index].id;
-      let sys_show = this.list[index].sys_show;
-      axios({
-        method: "post",
-        url: '/apis/system/' + id + '/' + sys_show
-      }).then(res => {
-        if (res.data.data === true) {
-          this.$message.success("修改成功");
-        } else {
-          this.$message.error("修改失败");
-        }
-      })
-    },
+
     change(page) {
       this.current_page = page;
-      this.getList();
+      this.getUpdateLogList();
     },
-    getList() {
+    getUpdateLogList() {
       let that = this;
-      that.loading = true;
+      that.loading = false;
       axios({
         method: 'get',
-        url: '/apis/system/get/' + this.current_page + '/' + 10
-      }).then(function (res) {
-
+        url: '/apis/updateLog/getAll',
+        params:{
+      page:this.current_page,
+          size:10
+        }
+      }).then(res => {
         that.loading = false;
-        that.list = res.data.data.records;
+        that.list = res.data.data.updateLogList;
         that.last_page = Math.ceil(res.data.data.total / 10);
       })
           .catch(function (error) {
@@ -205,20 +195,39 @@ export default {
       let id = this.list[index].id;
       axios({
         method:'delete',
-      url:'/apis/system/' + id
+        url:'/apis/updateLog/' + id
       }).then(res => {
+        this.getUpdateLogList();
         if (res.data.data === true) {
-          this.$message.success("删除成功");
-          this.getList();
+          this.$notify({
+            type:'success',
+            title:'删除操作',
+            message:'删除成功'
+          })
         } else {
-          this.$message.error("删除失败");
+          this.$notify({
+            type:'error',
+            title:'删除操作',
+            message:'删除失败'
+          })
         }
       })
     }
   },
   mounted() {
-    this.getList();
+    this.getUpdateLogList();
   },
+  computed: {
+    dateChange() {
+      return (time) => {
+        var date = new Date(time);
+        let Y = date.getFullYear() + '-';
+        let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+        let D = date.getDate() + ' ';
+        return Y + M + D;
+      }
+    },
+  }
 };
 </script>
 <style lang="stylus" scoped></style>

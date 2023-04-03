@@ -55,31 +55,32 @@
         });
       },
       login(){
-        // sessionStorage.setItem("user_id",1);
-        // this.$router.push("/home");
-
             let that=this
         axios.post('/apis/userInfo',{
           user_account: that.form.name,
           user_password: that.form.password
-        }).then(function (response) {
-                //that.$store.dispatch("setToken", response.data.data);
-               that.$store.commit("newSetToken",response.data.data);
-          sessionStorage.setItem("user_id",response.data.data);
-                that.$message({
-                    message: '登录成功',
-                    type: 'success'
-                    });
-                 // that.$store.dispatch("userInfo");
-                  that.$router.push("/home");
-
+        }).then( res => {
+          console.log(res.data.success)
+          if(res.data.success === true) {
+            that.$store.commit("newSetToken", res.data.data);
+            sessionStorage.setItem("user_id", res.data.data);
+            this.$notify({
+              message:'登录成功',
+              title:'登录提示',
+              type:'success'
             })
-            .catch(function (error) {
-              that.$message({
-                message: '网络异常',
-                type: 'error'
-              });
-            });
+            // that.$store.dispatch("userInfo");
+            that.$router.push("/home");
+          }
+          else {
+            this.$notify({
+              type:'error',
+              title:'登录提示',
+              message:'账号或密码错误'
+            })
+          }
+            })
+
       }
     },
     created() {
